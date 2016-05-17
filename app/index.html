@@ -17,9 +17,10 @@
 
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
-<body ng-controller="MainCtrl as Main">
-
-  This is the view
+<body>
+  <div data-ng-controller="MainCtrl">
+    <scatter-chart class="chart" data="logs"></scatter-chart>
+  </div>
 
   <!-- Third party Libraries -->
   <script src="bower_components/d3/d3.js"></script>
@@ -29,7 +30,7 @@
   <!-- Application Files -->
   <script src="app.js"></script>
   <script src="components/main/mainController.js"></script>
-  <script src="components/chart.js"></script>
+  <script src="components/chart/chart.js"></script>
 
 </body>
 </html>
