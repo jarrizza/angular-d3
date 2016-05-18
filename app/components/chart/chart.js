@@ -1,4 +1,4 @@
-"use strict;"
+"use strict";
 
 
 angular.module('d3Chart',[])
@@ -8,6 +8,7 @@ angular.module('d3Chart',[])
    return d3; 
 })
 
+/* This directive displays a scatter chart of the data */
 .directive ('scatterChart', ["d3",
     function (d3) {
 
@@ -22,10 +23,7 @@ angular.module('d3Chart',[])
 
            // Define x-scale (based on values in data)
            var xScale = d3.time.scale()
-               .domain([
-                   new Date(d3.min(data, function(d) { return d.time; })),
-                   new Date(d3.max(data, function(d) { return d.time; }))
-               ])
+               .domain( d3.extent(data, function(d) { return d.x; }))
                .range([margin, width-margin ]);
 
            // Define x-axis using a time scale for number of seconds that have passed
@@ -36,7 +34,7 @@ angular.module('d3Chart',[])
 
            // Define y-scale (based on values in data)
            var yScale = d3.scale.linear()
-               .domain([0, d3.max(data, function(d) { return d.visitors; })])
+               .domain([0, d3.max(data, function(d) { return d.y; })])
                .range([margin, height-margin ]);
 
            // Define y-axis with a linear scale for integer value of number of visitors
@@ -65,16 +63,15 @@ angular.module('d3Chart',[])
            svg.select('.data')
                .selectAll('circle').data(data)
                .attr('r', 2.5)
-               .attr('cx', function(d) { return xScale(new Date(d.time)); })
-               .attr('cy', function(d) { return yScale(d.visitors); });
+               .attr('cx', function(d) { return xScale(d.x); })
+               .attr('cy', function(d) { return yScale(d.y); });
 
        };
 
        return {
-          restrict: 'E',
+          restrict: 'E', // directive as a new "html" tag
           scope: {
-             // allow access to the dataset that is passed in the html template
-             data: "="
+             data: "=" // allow access to the dataset that is passed in the html template
           },
 
           // The svg and groups for the chart are added to the DOM in the compile stage
@@ -96,9 +93,20 @@ angular.module('d3Chart',[])
 
                 // Watch for data changes in the scope
                 scope.$watch('data', function(newVal, oldVal, scope) {
-                    // Update the chart by calling "draw" when data changes
+
+                    // If data has been defined in the scope ...
                     if (scope.hasOwnProperty("data")) {
-                        draw(svg, width, height, scope.data);
+
+                        // Map the data to x and y
+                        var data = scope.data.map(function(d) {
+                            return {
+                                x: new Date(d.time),
+                                y: d.visitors
+                            }
+                        });
+
+                        // Update the chart by calling "draw" when data changes
+                        draw(svg, width, height, data);
                         }
                 }, true);
              };
