@@ -12,25 +12,46 @@
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
 
-  <link rel="stylesheet" href="styles/app.css">
+  <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/chart.css">
 
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
 <body>
-  <div data-ng-controller="MainCtrl">
-    <scatter-chart class="chart" data="logs"></scatter-chart>
-  </div>
+
+   <div class="app-header">
+       <img src="images/sample-logo.svg"/>
+   </div>
+
+   <div class="mainControls" data-ng-controller="MainCtrl as vmMain">
+
+       <div class="row">
+          <div data-ng-controller="RandomScatterChartCtrl as vmRandom" data-ng-cloak >
+             <span class="chart-header">{{vmRandom.title}}</span><br/>
+             <scatter-chart class="chart" data="vmRandom.logs" thumbnail="vmRandom.isThumbnail" data-ng-click="vmRandom.isThumbnail = !vmRandom.isThumbnail"></scatter-chart>
+          </div>
+
+           <div data-ng-controller="LoadedScatterChartCtrl as vmLoaded" data-ng-cloak >
+           <span class="chart-header">{{vmLoaded.title}}</span><br/>
+           <scatter-chart class="chart" data="vmLoaded.logs" thumbnail="vmLoaded.isThumbnail" data-ng-click="vmLoaded.isThumbnail = !vmLoaded.isThumbnail"></scatter-chart>
+       </div>
+       </div>
+
+   </div>
+
+ <div class="app-footer"><i>Footer Text - Copyright 2016</i></div>
 
   <!-- Third party Libraries -->
-  <script src="bower_components/d3/d3.js"></script>
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
+   <script src="bower_components/d3/d3.js"></script>
+   <script src="bower_components/angular/angular.js"></script>
+   <script src="bower_components/angular-route/angular-route.js"></script>
 
   <!-- Application Files -->
-  <script src="app.js"></script>
-  <script src="components/main/mainController.js"></script>
-  <script src="components/chart/chart.js"></script>
+   <script src="app.js"></script>
+   <script src="components/main/mainController.js"></script>
+   <script src="components/chart/chartServices.js"></script>
+   <script src="components/chart/chartControllers.js"></script>
+   <script src="components/chart/scatterChartDirective.js"></script>
 
 </body>
 </html>

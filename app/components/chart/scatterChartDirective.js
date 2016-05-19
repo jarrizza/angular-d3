@@ -8,11 +8,14 @@ angular.module('d3Chart',[])
    return d3; 
 })
 
-/* This directive displays a scatter chart of the data */
+/* This directive displays a scatter chart of the data array attached to the element.
+ * The x axis is a string date value, the y axis is an integer value
+ * It also maintains a toggle based on the value of a boolean "thumbnail" parameter */
+
 .directive ('scatterChart', ["d3",
     function (d3) {
 
-       // This function is called every time the data is updated
+       // This function is called every time the data is updated to redraw the svg graph
        var draw = function(svg, width, height, data) {
             svg
                 .attr('width', width)
@@ -37,7 +40,7 @@ angular.module('d3Chart',[])
                .domain([0, d3.max(data, function(d) { return d.y; })])
                .range([margin, height-margin ]);
 
-           // Define y-axis with a linear scale for integer value of number of visitors
+           // Define y-axis with a linear scale for a value
            var yAxis = d3.svg.axis()
                .scale(yScale)
                .orient('left')
@@ -71,7 +74,8 @@ angular.module('d3Chart',[])
        return {
           restrict: 'E', // directive as a new "html" tag
           scope: {
-             data: "=" // allow access to the dataset that is passed in the html template
+             data: "=", // allow access to the dataset that is passed in the html template
+             thumbnail: "=" // allow access to the size toggle state
           },
 
           // The svg and groups for the chart are added to the DOM in the compile stage
@@ -86,22 +90,44 @@ angular.module('d3Chart',[])
              svg.append('g').attr('class','y-axis axis');
 
              // Define the dimensions of the chart
-             var width = 600, height = 300;
+             var width = 400, height = 200, data = [];
 
              // Return the link function which draws data in the chart
              return function(scope, element, attrs) {
 
-                // Watch for data changes in the scope
+
+                 // Watch for data changes in the data
+                 scope.$watch('thumbnail', function(newVal, oldVal, scope) {
+
+                     // If data has been defined in the scope ...
+                     if (scope.hasOwnProperty("data")) {
+
+                         if (scope.thumbnail == true) {
+                             width = 400;
+                             height = 200;
+                         }
+                         else {
+                             width = 800;
+                             height = 400;
+                         }
+
+                         // Update the chart by calling "draw" when data changes
+                         draw(svg, width, height, data);
+                     }
+                 }, true);
+
+
+                // Watch for data changes in the data
                 scope.$watch('data', function(newVal, oldVal, scope) {
 
                     // If data has been defined in the scope ...
                     if (scope.hasOwnProperty("data")) {
 
                         // Map the data to x and y
-                        var data = scope.data.map(function(d) {
+                        data = scope.data.map(function(d) {
                             return {
                                 x: new Date(d.time),
-                                y: d.visitors
+                                y: d.value
                             }
                         });
 
