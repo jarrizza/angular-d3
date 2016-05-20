@@ -1,37 +1,28 @@
-"use strict;"
+"use strict";
 
 /* This controller obtains data for a time X integer scatter chart by generating
-* random points every second and updating the chart as the points come in.
-*/
+ * random points every second and updating the chart as the points come in.
+ */
 
 app.controller('RandomScatterChartCtrl',[
     '$interval',
-    function ($interval) {
+    'dataManagerService',
+    function ($interval, dataManagerService) {
 
         var vmScatter = this;
         vmScatter.title = "Random Scatter";
 
-        // Control parameters for plot data and size of display
-        vmScatter.logs = [];
+        // Control of sizing used by click function
         vmScatter.isThumbnail = true;
 
-        // initialize the first date in the log records (timezone GMT+01)
-        var time = new Date('2014-01-01 00:00:00 +0100');
-
-        // Random data point generator with a time and integer in each point record
-        var randPoint = function() {
-            var rand = Math.random,
-                obj = { time: time.toString(), value: parseInt(rand() * 100) };
-            return obj;
-        };
-        //Store a list of logs initialized with a random point
-        vmScatter.logs = [ randPoint() ];
+        // Initialize logs with the first random data point
+        vmScatter.logs = [ dataManagerService.getRandomPoint(1) ] ; //[ randPoint() ];
 
         //Every second push a new random point onto the logs
         $interval(function() {
-            var point = randPoint();
-            time.setSeconds(time.getSeconds() + 1);
-            vmScatter.logs.push(point);
+            //var point = randPoint();
+            //time.setSeconds(time.getSeconds() + 1);
+            vmScatter.logs.push( dataManagerService.getRandomPoint(1) );
         }, 1000);
 
     }
@@ -43,11 +34,11 @@ app.controller('RandomScatterChartCtrl',[
 
 app.controller('LoadedScatterChartCtrl',[
     '$interval',
-    'SimpleHttpLoader',
-    function ($interval,SimpleHttpLoader) {
+    'simpleHttpLoader',
+    function ($interval, simpleHttpLoader) {
 
-        var reloadInterval = 60000; // reload every minute
-        var vmLoaded = this;
+        var reloadInterval = 60000, // reload every minute
+            vmLoaded = this;        
 
         // Control parameters for plot data and size of display
         vmLoaded.isThumbnail = true;
@@ -55,14 +46,13 @@ app.controller('LoadedScatterChartCtrl',[
         vmLoaded.src = 'data/TestScatter.log';
         vmLoaded.logs = [];
 
-        SimpleHttpLoader(vmLoaded.src)
+        simpleHttpLoader(vmLoaded.src)
             .then(function(response) {
                 vmLoaded.logs = response.data;
             });
         
         $interval(function() {
-            console.log("calling the load service on the interval");
-            SimpleHttpLoader(vmLoaded.src)
+            simpleHttpLoader(vmLoaded.src)
                 .then(function(response) {
                     vmLoaded.logs = response.data;
                 });

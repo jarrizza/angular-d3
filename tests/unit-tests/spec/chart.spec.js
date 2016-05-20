@@ -1,3 +1,4 @@
+/* This suite of tests checks the scatter-chart directive function */
 describe('scatter-chart-tests',
 function () {
  
@@ -37,3 +38,4 @@ function () {
     });
 
 });
+
