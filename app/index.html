@@ -19,7 +19,7 @@
 <body>
 
    <div class="app-header">
-       <img src="images/sample-logo.svg"/>
+       <img src="images/logo.svg"/>
    </div>
 
    <div class="mainControls" data-ng-controller="MainCtrl as vmMain">
@@ -27,12 +27,12 @@
        <div class="row">
           <div data-ng-controller="RandomScatterChartCtrl as vmRandom" data-ng-cloak >
              <span class="chart-header">{{vmRandom.title}}</span><br/>
-             <scatter-chart class="chart" data="vmRandom.logs" thumbnail="vmRandom.isThumbnail" data-ng-click="vmRandom.isThumbnail = !vmRandom.isThumbnail"></scatter-chart>
+             <scatter-chart class="chart" data="vmRandom.logs" thumbnail="vmRandom.isThumbnail" x-ng-click="vmRandom.isThumbnail = !vmRandom.isThumbnail"></scatter-chart>
           </div>
 
            <div data-ng-controller="LoadedScatterChartCtrl as vmLoaded" data-ng-cloak >
            <span class="chart-header">{{vmLoaded.title}}</span><br/>
-           <scatter-chart class="chart" data="vmLoaded.logs" thumbnail="vmLoaded.isThumbnail" data-ng-click="vmLoaded.isThumbnail = !vmLoaded.isThumbnail"></scatter-chart>
+           <scatter-chart class="chart" data="vmLoaded.logs" thumbnail="vmLoaded.isThumbnail" x-ng-click="vmLoaded.isThumbnail = !vmLoaded.isThumbnail"></scatter-chart>
        </div>
        </div>
 
